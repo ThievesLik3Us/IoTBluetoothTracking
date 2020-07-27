@@ -10,6 +10,9 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ConfigureItemActivity extends AppCompatActivity {
 
     @Override
@@ -26,19 +29,34 @@ public class ConfigureItemActivity extends AppCompatActivity {
         save_item_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                processSavedItem();
+                try {
+                    processSavedItem();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
     }
 
-    private void processSavedItem() {
+    private void processSavedItem() throws JSONException {
         EditText itemNameEditText = (EditText) findViewById(R.id.EditTextItemName);
         String itemName = itemNameEditText.getText().toString().trim();
         CheckBox statusCheckBox = (CheckBox) findViewById(R.id.StatusCheckBox);
         Boolean status = statusCheckBox.isChecked();
-        Log.i("FORM DATA: ", String.format("Item name: %s", itemName));
-        Log.i("FORM DATA: ", String.format("Item status: %s", status));
+
+        Item savedItem = new Item(itemName, status);
+
+        Log.i("FORM DATA: ", String.format("Item id: %s", savedItem.getItemID()));
+        Log.i("FORM DATA: ", String.format("Item name: %s", savedItem.getItemName()));
+        Log.i("FORM DATA: ", String.format("Item status: %s", savedItem.getEnabledStatus()));
+
+        JSONObject itemJSON = savedItem.toJSON();
+        System.out.println("savedItem " + itemJSON);
+
+        Item newItem = new Item();
+        newItem.fromJSON(itemJSON);
+        System.out.println("newItem name " + newItem.getItemName());
     }
 
 
