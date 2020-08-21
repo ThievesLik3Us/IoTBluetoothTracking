@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import socket
 import ssl
+import json
 
 # Setup Server address and port
 HOST_ADDR = '127.0.0.1'
@@ -45,7 +46,10 @@ while True:
                 client_data_buffer += received_data
             else:
                 # No more data from client. Show buffer and close connection.
-                print("Received:", client_data_buffer)
+                print("Received:", client_data_buffer.decode())
+                # Create JSON object from received data
+                client_json_object = json.loads(client_data_buffer.decode())
+                print("JSON Object:", client_json_object)
                 break
     finally:
         print("Closing connection")

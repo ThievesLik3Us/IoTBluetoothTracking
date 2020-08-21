@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import socket
 import ssl
+import json
 
 # Setup Client address and port
 LISTEN_ADDR = '127.0.0.1'
@@ -29,8 +30,13 @@ client_connection.connect((LISTEN_ADDR, LISTEN_PORT))
 
 print("SSL established. Peer: {}".format(client_connection.getpeercert()))
 
-print("Sending: 'Hello, world!")
-client_connection.send(b"Hello, world!")
+print("Sending: JSON Test object")
+# create temp JSON object to test sending JSON
+json_test_object =  { "name":"John", "age":30, "city":"New York" }
+message = json.dumps(json_test_object)
+
+# Send the JSON object in byte format
+client_connection.sendall(message.encode())
 
 print("Closing connection")
 client_connection.close()
