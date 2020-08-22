@@ -2,6 +2,8 @@
 import socket
 import ssl
 import json
+import tink
+from tink import hybrid
 
 # Setup Client address and port
 LISTEN_ADDR = '127.0.0.1'
@@ -30,13 +32,43 @@ client_connection.connect((LISTEN_ADDR, LISTEN_PORT))
 
 print("SSL established. Peer: {}".format(client_connection.getpeercert()))
 
-print("Sending: JSON Test object")
-# create temp JSON object to test sending JSON
+
+# Create Test JSON object and convert it to raw bytes
 json_test_object =  { "name":"John", "age":30, "city":"New York" }
 message = json.dumps(json_test_object)
+context = b'context'
+
+server_public_key = client_connection.recv(4096)
+
+print("Encrypting JSON Object")
+# Register all Hybrid primitives
+hybrid.register()
+
+# 1. Generate the private key material.
+private_keyset_handle = tink.new_keyset_handle(hybrid.hybrid_key_templates.ECIES_P256_HKDF_HMAC_SHA256_AES128_GCM)
+
+# Obtain the public key material.
+public_keyset_handle = private_keyset_handle.public_keyset_handle()
+
+# Encryption
+
+# 2. Get the primitive.
+hybrid_encrypt = public_keyset_handle.primitive(hybrid.HybridEncrypt)
+
+# Send the public key to the server to use for encrypting the message
+client_connection.sendall(hybrid_encrypt)
+
+# Receive the public key from the server to encrypt messages sent to the server
+
+
+# 3. Use the primitive.
+ciphertext = hybrid_encrypt.encrypt(message.encode(), context)
+
+
+print("Sending: JSON Test object")
 
 # Send the JSON object in byte format
-client_connection.sendall(message.encode())
+client_connection.sendall(ciphertext)
 
 print("Closing connection")
 client_connection.close()
