@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="locationslist">
+        <item>@string/location1</item>
+        <item>@string/location2</item>
+        <item>@string/location3</item>
+        <item>@string/location4</item>
+    </string-array>
+
+    <string-array name="exampleroutines">
+        <item>Routine 1</item>
+        <item>Routine 2</item>
+        <item>Routine 3</item>
+        <item>Routine 4</item>
+    </string-array>
+
+    <string-array name="exampleitems">
+        <item>Item 1</item>
+        <item>Item 2</item>
+        <item>Item 3</item>
+        <item>Item 4</item>
+    </string-array>
+</resources>

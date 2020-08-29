@@ -1,0 +1,2 @@
+rootProject.name='BluecateV1'
+include ':app'
