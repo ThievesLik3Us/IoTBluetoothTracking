@@ -1,0 +1,8 @@
+openssl genrsa -out client_android.key 4096
+
+openssl req -new -key client_android.key -out client_android.csr
+
+openssl ca -cert ca.crt -keyfile ca.key -in client_android.csr -out client_android.crt
+
+openssl pkcs12 -export -in client_android.crt -inkey client_android.key -out client_android.p12
+

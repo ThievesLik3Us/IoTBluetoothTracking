@@ -1,5 +1,6 @@
 package com.example.bluecatev1;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -57,7 +58,29 @@ public class ConfigureItemActivity extends AppCompatActivity {
         Item newItem = new Item();
         newItem.fromJSON(itemJSON);
         System.out.println("newItem name " + newItem.getItemName());
+
+//        goToSendToRockPiActivity();
+
+//        goToReceiveFromRockPiActivity();
+
+//        goToSendSSLToRockPiActivity();
+
+
     }
 
+    private void goToSendSSLToRockPiActivity() {
+        Intent intent = new Intent(this, SendSSLToRockPiActivity.class);
+        startActivity(intent);
+    }
+
+//    private void goToSendToRockPiActivity() {
+//        Intent intent = new Intent(this, SendToRockPiActivity.class);
+//        startActivity(intent);
+//    }
+//
+//    private void goToReceiveFromRockPiActivity() {
+//        Intent intent = new Intent(this, ReceiveFromRockPiActivity.class);
+//        startActivity(intent);
+//    }
 
 }
