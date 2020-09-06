@@ -55,7 +55,6 @@ while True:
         server_connection.send("Hello From Server".encode())
         while True:
             received_data = server_connection.recv(4096)
-            print("received_data not null")
             if received_data:
                 # Client sent us data. Append to buffer
                 client_data_buffer += received_data

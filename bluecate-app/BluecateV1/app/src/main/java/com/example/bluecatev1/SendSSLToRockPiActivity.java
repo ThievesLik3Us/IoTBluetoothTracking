@@ -192,7 +192,7 @@ public class SendSSLToRockPiActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        tvServerMessages.setText("server: " + SERVER_MESSAGE);
+                        tvServerMessages.setText("server sends: " + SERVER_MESSAGE);
                     }
                 });
 

@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -125,7 +128,8 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                StartClient();
+                JSONObject testJSONObject = createSampleRoutine();
+                StartClient(testJSONObject);
             } catch (KeyStoreException e) {
                 e.printStackTrace();
             } catch (UnrecoverableKeyException e) {
@@ -133,6 +137,8 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             } catch (KeyManagementException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
@@ -184,7 +190,18 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
 //        return getPrimitive(keysetHandle,null);
 //    }
 
-    private void StartClient() throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyManagementException{
+    private JSONObject createSampleRoutine() throws JSONException {
+        Routine testRoutine = new Routine("test routine",
+                "test location alias",
+                "test command",
+                true);
+        JSONObject routineJSON = testRoutine.toJSON();
+        System.out.println(routineJSON);
+
+        return routineJSON;
+    }
+
+    private void StartClient(JSONObject clientObject) throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyManagementException{
         SSLSocket clientSocket=null;
         DataInputStream inputDataStream=null;
         DataOutputStream outputDataStream=null;
@@ -223,20 +240,14 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
                 });
                 outputDataStream = new DataOutputStream(clientSocket.getOutputStream());
                 input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-//                    inputDataStream = new DataInputStream(sslSocket.getInputStream());
-
-//                    Byte dataInput=inputDataStream.readByte();
-//                    String dataString = dataInput.toString();
-//                    String inputUpper=dataString.toUpperCase();
-
-                byte[] serverMessageBytes = CLIENT_MESSAGE.getBytes();
+                final String clientJSONAsString = clientObject.toString();
+                byte[] serverMessageBytes = clientJSONAsString.getBytes();
                 outputDataStream.write(serverMessageBytes);
-//                outputDataStream.writeUTF(SERVER_MESSAGE);
                 outputDataStream.flush();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        tvClientMessages.setText("client: " + CLIENT_MESSAGE);
+                        tvClientMessages.setText("client sends: " + clientJSONAsString);
                     }
                 });
 

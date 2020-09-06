@@ -5,22 +5,24 @@ import json
 
 
 # Setup Client address and port
-LISTEN_ADDR = '127.0.0.1'
+LISTEN_ADDR = '10.0.0.161'
 LISTEN_PORT = 8082
 
 # Setup Client Certificates and key files
-CLIENT_SSL_CERT = 'client.crt'
-CLIENT_SSL_KEY = 'client.key'
+CLIENT_SSL_CERT = 'certs/client_android.crt'
+CLIENT_SSL_KEY = 'certs/client_android.key'
 
 # Setup Client Certificates and key files
-SERVER_SSL_CERT = 'server.crt'
-SERVER_SSL_KEY = 'server.key'
-SERVER_SNI_HOSTNAME = 'bluecate.com'
+SERVER_SSL_CERT = 'certs/server.crt'
+SERVER_SSL_KEY = 'certs/server.key'
+
+CA_SSL_CERT = 'certs/ca.crt'
+SERVER_SNI_HOSTNAME = 'www.bluecate.com'
 
 
 def initialize_socket():
     # Establish Client certificates and Server authentication certificates
-    client_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=SERVER_SSL_CERT)
+    client_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=CA_SSL_CERT)
     client_context.load_cert_chain(certfile=CLIENT_SSL_CERT, keyfile=CLIENT_SSL_KEY)
 
     # Create Client socket
@@ -40,6 +42,7 @@ def send_json_object(client_connection, json_object):
     message = json.dumps(json_object)
     # Send the JSON object in byte format
     client_connection.sendall(message.encode())
+    return client_connection.recv(1024)
 
 def close_connection():
     print("Closing connection")
@@ -48,5 +51,6 @@ def close_connection():
 # Create Test JSON object and convert it to raw bytes
 json_test_object =  { "name":"John", "age":30, "city":"New York" }
 client_connection = initialize_socket()
-send_json_object(client_connection, json_test_object)
+server_confirmation = send_json_object(client_connection, json_test_object)
+print("Received: ", str(server_confirmation.decode()))
 close_connection()
