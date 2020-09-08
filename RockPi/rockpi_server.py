@@ -2,18 +2,19 @@
 import socket
 import ssl
 import json
+from rockpi_parse_and_store import Store_into_DB
 
 # Setup Server address and port
 HOST_ADDR = '127.0.0.1'
 HOST_PORT = 8082
 
 # Setup Client Certificates and key files
-CLIENT_SSL_CERT = 'client.crt'
-CLIENT_SSL_KEY = 'client.key'
+CLIENT_SSL_CERT = '../certs/client.crt'
+CLIENT_SSL_KEY = '../certs/client.key'
 
 # Setup Client Certificates and key files
-SERVER_SSL_CERT = 'server.crt'
-SERVER_SSL_KEY = 'server.key'
+SERVER_SSL_CERT = '../certs/server.crt'
+SERVER_SSL_KEY = '../certs/server.key'
 SERVER_SNI_HOSTNAME = 'bluecate.com'
 
 # Wrap the socket in SSL certs
@@ -32,11 +33,11 @@ server_bindsocket.bind((HOST_ADDR, HOST_PORT))
 server_bindsocket.listen(5)
 
 while True:
-    print("Waiting for client")
+    print("Waiting for the lazy ass client")
     newsocket, fromaddr = server_bindsocket.accept()
-    print("Client connected: {}:{}".format(fromaddr[0], fromaddr[1]))
+    print("Client finally showed up: {}:{}".format(fromaddr[0], fromaddr[1]))
     server_connection = server_context.wrap_socket(newsocket, server_side=True)
-    print("SSL established. Peer: {}".format(server_connection.getpeercert()))
+    print("Super Secret SSL Handshake completed. Peer: {}".format(server_connection.getpeercert()))
     client_data_buffer = b''  # Buffer to hold received client data
     try:
         while True:
@@ -50,8 +51,9 @@ while True:
                 # Create JSON object from received data
                 client_json_object = json.loads(client_data_buffer.decode())
                 print("JSON Object:", client_json_object)
+                Store_into_DB(client_json_object)
                 break
     finally:
-        print("Closing connection")
+        print("connection is closed ... for now")
         server_connection.shutdown(socket.SHUT_RDWR)
         server_connection.close()
