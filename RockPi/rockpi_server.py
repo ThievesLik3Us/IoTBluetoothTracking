@@ -2,7 +2,7 @@
 import socket
 import ssl
 import json
-from rockpi_parse_and_store import Store_into_DB
+from rockpi_parse_and_store import Store_Into_DB
 
 # Setup Server address and port
 HOST_ADDR = '127.0.0.1'
@@ -51,7 +51,9 @@ while True:
                 # Create JSON object from received data
                 client_json_object = json.loads(client_data_buffer.decode())
                 print("JSON Object:", client_json_object)
-                Store_into_DB(client_json_object)
+
+                # Store the JSON object into the database
+                Store_Into_DB(client_json_object)
                 break
     finally:
         print("connection is closed ... for now")

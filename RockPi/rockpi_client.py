@@ -2,7 +2,7 @@
 import socket
 import ssl
 import json
-
+from rockpi_retrieve_json_object import Retrieve_From_DB
 
 # Setup Client address and port
 LISTEN_ADDR = '127.0.0.1'
@@ -37,6 +37,7 @@ def initialize_socket():
 
 def send_json_object(client_connection, json_object):
     print("Sending: JSON Test object. Hope it works")
+    # Create a string from the json_object
     message = json.dumps(json_object)
     # Send the JSON object in byte format
     client_connection.sendall(message.encode())
@@ -46,7 +47,8 @@ def close_connection():
     client_connection.close()
 
 # Create Test JSON object and convert it to raw bytes
-json_test_object =  { "username":"myuser", "email":"test@aol.com", "password":"T3st123!" }
+#json_test_object =  { "username":"myuser", "email":"test@aol.com", "password":"T3st123!" }
+json_test_object = Retrieve_From_DB('myuser')
 client_connection = initialize_socket()
 send_json_object(client_connection, json_test_object)
 close_connection()
