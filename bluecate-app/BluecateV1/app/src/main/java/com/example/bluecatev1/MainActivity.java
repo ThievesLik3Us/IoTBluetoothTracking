@@ -45,6 +45,23 @@ public class MainActivity extends AppCompatActivity {
                 goToItemsActivity();
             }
         });
+
+        Button about_button = (Button) findViewById(R.id.button_about);
+        about_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToSendSSLToRockPiActivity();
+            }
+        });
+
+        Button settings_button = (Button) findViewById(R.id.button_settings);
+        settings_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToReceiveSSLFromRockPiActivity();
+            }
+        });
+
     }
 
     @Override
@@ -52,6 +69,16 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    private void goToSendSSLToRockPiActivity() {
+        Intent intent = new Intent(this, SendSSLToRockPiActivity.class);
+        startActivity(intent);
+    }
+
+    private void goToReceiveSSLFromRockPiActivity() {
+        Intent intent = new Intent(this, ReceiveSSLFromRockPiActivity.class);
+        startActivity(intent);
     }
 
     private void goToConfigActivity() {

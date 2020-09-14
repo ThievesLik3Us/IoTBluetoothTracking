@@ -1,0 +1,46 @@
+keytool -import -trustcacerts -file ca.crt -alias server_ca -keystore "C:\Program Files\Java\jre1.8.0_241\lib\security\cacerts"
+
+keytool -import -trustcacerts -file client_android.crt -alias client_android -keystore "C:\Program Files\Java\jre1.8.0_241\lib\security\cacerts"
+
+keytool -import -trustcacerts -file server.crt -alias server_crt -keystore "C:\Program Files\Java\jre1.8.0_241\lib\security\cacerts"
+
+openssl pkcs12 -export -in client_app.pem -inkey client_app.key -out client_app.p12
+
+openssl genrsa -out client_android.key 4096
+
+openssl req -new -key client_android.key -out client_android.csr
+
+openssl ca -cert ca.crt -keyfile ca.key -in client_android.csr -out client_android.crt
+
+keytool -delete -noprompt -alias client_android -keystore "C:\Program Files\Java\jre1.8.0_241\lib\security\cacerts" -storepass changeit
+
+keytool -import -trustcacerts -file client_android.crt -alias client_android -keystore "C:\Program Files\Java\jre1.8.0_241\lib\security\cacerts"
+
+cat client_android.key > client_android.pem
+cat client_android.crt >> client_android.pem
+
+winpty openssl pkcs12 -export -in client_android.pem -out client_android.pkcs12 
+
+winpty openssl pkcs12 -export -in client_android.crt -inkey client_android.key -out client_android.p12
+
+winpty openssl pkcs12 -export -in ca.crt -inkey ca.key -out ca_app.p12 
+
+
+openssl genrsa -out client_android_signed_by_server.key 4096
+
+openssl req -new -key client_android_signed_by_server.key -out client_android_signed_by_server.csr
+
+openssl ca -cert server.crt -keyfile server.key -in client_android_signed_by_server.csr -out client_android_signed_by_server.crt
+
+winpty openssl pkcs12 -export -in client_android_signed_by_server.crt -inkey client_android_signed_by_server.key -out client_android_signed_by_server.p12 
+
+cat client_android_RockPi.key > client_android_RockPi.pem
+cat client_android_RockPi.crt >> client_android_RockPi.pem
+cat client_android_RockPi.crt >> client_android_RockPi.pem
+
+
+openssl req -x509 -nodes -newkey rsa:4096 -keyout client_new.key -new -out client_new.csr
+
+openssl ca -keyfile ca.key -cert ca.crt -in client_new.csr -out client_new.crt
+
+winpty openssl pkcs12 -export -in client_android_signed_by_server.crt -inkey client_android_signed_by_server.key -out client_android_signed_by_server.p12 

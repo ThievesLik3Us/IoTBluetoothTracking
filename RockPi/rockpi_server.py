@@ -7,10 +7,14 @@ from rockpi_parse_and_store import Store_Into_DB
 # Setup Server address and port
 HOST_ADDR = '10.0.0.7'
 HOST_PORT = 8082
+print("IP/Port" + HOST_ADDR + "/" + str(HOST_PORT))
 
 # Setup Client Certificates and key files
 CLIENT_SSL_CERT = '../certs/client.crt'
 CLIENT_SSL_KEY = '../certs/client.key'
+
+CA_SSL_CERT = 'ca.crt'
+CA_SSL_KEY = 'ca.key'
 
 # Setup Client Certificates and key files
 SERVER_SSL_CERT = '../certs/server.crt'
@@ -24,8 +28,10 @@ server_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 server_context.verify_mode = ssl.CERT_REQUIRED
 # Load the Server side certificates
 server_context.load_cert_chain(certfile=SERVER_SSL_CERT, keyfile=SERVER_SSL_KEY)
+
 # Validate Client certficate
-server_context.load_verify_locations(cafile=CLIENT_SSL_CERT)
+server_context.load_verify_locations(cafile=CA_SSL_CERT)
+# server_context.load_verify_locations(cafile=CLIENT_SSL_CERT)
 
 # Create a socket on the host to a specific port
 server_bindsocket = socket.socket()
@@ -40,11 +46,14 @@ while True:
     print("Super Secret SSL Handshake completed. Peer: {}".format(server_connection.getpeercert()))
     client_data_buffer = b''  # Buffer to hold received client data
     try:
+        server_connection.send("Hello From Server".encode())
         while True:
             received_data = server_connection.recv(4096)
             if received_data:
                 # Client sent us data. Append to buffer
                 client_data_buffer += received_data
+                print(client_data_buffer)
+
             else:
                 # No more data from client. Show buffer and close connection.
                 print("Received:", client_data_buffer.decode())
@@ -55,6 +64,9 @@ while True:
                 # Store the JSON object into the database
                 Store_Into_DB(client_json_object)
                 break
+    except KeyboardInterrupt:
+        print("Keyboard input to shutdown program")
+
     finally:
         print("connection is closed ... for now")
         server_connection.shutdown(socket.SHUT_RDWR)

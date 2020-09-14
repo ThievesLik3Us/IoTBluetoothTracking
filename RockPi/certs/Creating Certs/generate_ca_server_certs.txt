@@ -1,0 +1,15 @@
+mkdir demoCA
+touch demoCA/index.txt demoCA/index.txt.attr
+echo '01' > demoCA/serial
+# Create a self-signed certificate and private key.
+openssl req -x509 -nodes -newkey rsa:4096 -keyout ca.key -new -out ca.crt
+
+# Create a certificate signing request for server, "localhost", and a private key.
+openssl req -nodes -newkey rsa:4096 -keyout server.key -new -out server.csr
+
+# Sign the certificate request.
+openssl ca -keyfile ca.key -cert ca.crt -in server.csr -outdir . -out server.crt
+
+cat server.crt server.key > server.pem
+
+winpty openssl pkcs12 -export -in server.crt -inkey server.key -out server.p12
