@@ -5,7 +5,7 @@ import json
 from rockpi_parse_and_store import Store_Into_DB
 
 # Setup Server address and port
-HOST_ADDR = '127.0.0.1'
+HOST_ADDR = '10.0.0.7'
 HOST_PORT = 8082
 
 # Setup Client Certificates and key files
@@ -31,7 +31,7 @@ server_context.load_verify_locations(cafile=CLIENT_SSL_CERT)
 server_bindsocket = socket.socket()
 server_bindsocket.bind((HOST_ADDR, HOST_PORT))
 server_bindsocket.listen(5)
-
+print("IP Addr: " + server_bindsocket.getsockname()[0])
 while True:
     print("Waiting for the lazy ass client")
     newsocket, fromaddr = server_bindsocket.accept()
