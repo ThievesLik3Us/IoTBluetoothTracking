@@ -3,18 +3,19 @@ import socket
 import ssl
 import json
 from rockpi_parse_and_store import Store_Into_DB
+from pymongo import MongoClient
 
 # Setup Server address and port
 HOST_ADDR = '10.0.0.7'
 HOST_PORT = 8082
-print("IP/Port" + HOST_ADDR + "/" + str(HOST_PORT))
+print("IP/Port: " + HOST_ADDR + "/" + str(HOST_PORT))
 
 # Setup Client Certificates and key files
 CLIENT_SSL_CERT = '../certs/client.crt'
 CLIENT_SSL_KEY = '../certs/client.key'
 
-CA_SSL_CERT = 'ca.crt'
-CA_SSL_KEY = 'ca.key'
+CA_SSL_CERT = './certs/ca.crt'
+CA_SSL_KEY = './certs/ca.key'
 
 # Setup Client Certificates and key files
 SERVER_SSL_CERT = '../certs/server.crt'
@@ -30,14 +31,15 @@ server_context.verify_mode = ssl.CERT_REQUIRED
 server_context.load_cert_chain(certfile=SERVER_SSL_CERT, keyfile=SERVER_SSL_KEY)
 
 # Validate Client certficate
-server_context.load_verify_locations(cafile=CA_SSL_CERT)
-# server_context.load_verify_locations(cafile=CLIENT_SSL_CERT)
+#server_context.load_verify_locations(cafile=CA_SSL_CERT)
+server_context.load_verify_locations(cafile=CLIENT_SSL_CERT)
 
 # Create a socket on the host to a specific port
 server_bindsocket = socket.socket()
 server_bindsocket.bind((HOST_ADDR, HOST_PORT))
 server_bindsocket.listen(5)
 print("IP Addr: " + server_bindsocket.getsockname()[0])
+
 while True:
     print("Waiting for the lazy ass client")
     newsocket, fromaddr = server_bindsocket.accept()
@@ -61,8 +63,14 @@ while True:
                 client_json_object = json.loads(client_data_buffer.decode())
                 print("JSON Object:", client_json_object)
 
-                # Store the JSON object into the database
-                Store_Into_DB(client_json_object)
+                # Connect to Local MongoDB
+                mongodb_client = MongoClient(port=27017)
+                android_db = mongodb_client.AndroidDB
+
+                # Store the JSON object into the AndroidDB database inside the AndroidCollection
+                #Store_Into_DB(client_json_object)
+                result = android_db.AndroidCollection.insert_one(client_json_object)
+                print("Stored JSON object with result: ", result)
                 break
     except KeyboardInterrupt:
         print("Keyboard input to shutdown program")
