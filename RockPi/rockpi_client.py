@@ -2,7 +2,6 @@
 import socket
 import ssl
 import json
-from rockpi_retrieve_json_object import Retrieve_From_DB
 from pymongo import MongoClient
 
 # Setup Client address and port
@@ -41,28 +40,24 @@ def initialize_socket():
 
 def send_json_object(client_connection, json_object):
     print("Sending: JSON Test object. Hope it works")
-    del json_object['_id']
-    print("\nJSON After Delete")
     # Create a string from the json_object
     message = json.dumps(json_object)
     # Send the JSON object in byte format
     client_connection.sendall(message.encode())
 
-def close_connection():
+def close_connection(client_connection):
     print("connection is closed ... for now")
     client_connection.close()
 
-# Create Test JSON object and convert it to raw bytes
-# json_test_object =  { "username":"myuser", "email":"test@aol.com", "password":"T3st123!" }
-# Connect to Local MongoDB
-mongodb_client = MongoClient(port=27017)
-android_db = mongodb_client.AndroidDB
+def Send_Message(json_object):
+    client_connection = initialize_socket()
+    send_json_object(client_connection, json_object)
+    close_connection(client_connection)
 
-# Grab JSON object matching the criteria
-json_test_object = android_db.AndroidCollection.find_one({'username': "myuser"})
-print("\nJSON Object: ", json_test_object)
+def main():
+    # Create Test JSON object and convert it to raw bytes
+    json_test_object =  { "command":"Store", "username":"myuser1", "email":"test@aol.com", "password":"T3st123!" }
+    Send_Message(json_test_object)
 
-#json_test_object = Retrieve_From_DB('myuser')
-client_connection = initialize_socket()
-send_json_object(client_connection, json_test_object)
-close_connection()
+if __name__ == "__main__":
+    main()

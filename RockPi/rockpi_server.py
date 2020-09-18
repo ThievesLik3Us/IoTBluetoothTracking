@@ -2,8 +2,33 @@
 import socket
 import ssl
 import json
-from rockpi_parse_and_store import Store_Into_DB
+import rockpi_client
 from pymongo import MongoClient
+
+
+def Process_Request(json_object):
+    # Grab the command from the json object
+    command = json_object['command']
+    # remove the command from the json object
+    del json_object['command']
+
+    # Connect to Local MongoDB
+    mongodb_client = MongoClient(port=27017)
+    android_db = mongodb_client.AndroidDB
+
+    if (command == 'Store'):
+        # Store the JSON object into the AndroidDB database inside the AndroidCollection
+        result = android_db.AndroidCollection.insert_one(client_json_object)
+        print("Stored JSON object with result: ", result)
+    elif (command == 'Retrieve'):
+        # Grab JSON object matching the criteria
+        retrieved_json_object = android_db.AndroidCollection.find_one(json_object)
+        print("\nJSON Object: ", retrieved_json_object)
+        del json_object['_id']
+        print("\nJSON After Delete")
+        Send_Message(retrieved_json_object)
+
+
 
 # Setup Server address and port
 HOST_ADDR = '10.0.0.7'
@@ -63,14 +88,8 @@ while True:
                 client_json_object = json.loads(client_data_buffer.decode())
                 print("JSON Object:", client_json_object)
 
-                # Connect to Local MongoDB
-                mongodb_client = MongoClient(port=27017)
-                android_db = mongodb_client.AndroidDB
-
-                # Store the JSON object into the AndroidDB database inside the AndroidCollection
-                #Store_Into_DB(client_json_object)
-                result = android_db.AndroidCollection.insert_one(client_json_object)
-                print("Stored JSON object with result: ", result)
+                # Process the Command sent
+                Process_Request(client_json_object)
                 break
     except KeyboardInterrupt:
         print("Keyboard input to shutdown program")
