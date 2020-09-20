@@ -5,7 +5,7 @@ import json
 from pymongo import MongoClient
 
 # Setup Client address and port
-LISTEN_ADDR = '10.0.0.7'
+LISTEN_ADDR = 'User-PC'
 LISTEN_PORT = 8082
 
 # Setup Client Certificates and key files

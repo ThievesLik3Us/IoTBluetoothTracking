@@ -31,7 +31,7 @@ def Process_Request(json_object):
 
 
 # Setup Server address and port
-HOST_ADDR = '10.0.0.7'
+HOST_ADDR = socket.gethostname()
 HOST_PORT = 8082
 print("IP/Port: " + HOST_ADDR + "/" + str(HOST_PORT))
 
