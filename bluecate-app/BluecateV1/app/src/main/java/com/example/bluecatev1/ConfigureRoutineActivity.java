@@ -3,6 +3,7 @@ package com.example.bluecatev1;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -63,5 +64,14 @@ public class ConfigureRoutineActivity extends AppCompatActivity {
         Routine newRoutine = new Routine();
         newRoutine.fromJSON(routineJSON);
         System.out.println("newRoutine name " + newRoutine.getRoutineName());
+
+        goToReceiveSSLFromRockPiActivity(routineJSON);
+    }
+
+
+    private void goToReceiveSSLFromRockPiActivity(JSONObject routine) {
+        Intent intent = new Intent(this, ReceiveSSLFromRockPiActivity.class);
+        intent.putExtra("routine", routine.toString());
+        startActivity(intent);
     }
 }

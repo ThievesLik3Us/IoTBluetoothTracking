@@ -7,6 +7,8 @@
     <string name="item_tracking">Item Tracking</string>
     <string name="about">About Us</string>
     <string name="settings">Settings</string>
+    <string name="android_client">Android as Client</string>
+    <string name="android_server">Android as Server</string>
     <string name="symbol">Company Logo</string>
 
     <!--    Device Config Text-->
@@ -36,6 +38,7 @@
     <string name="fill_in_generated_location">{ some raw location value }</string>
     <string name="fill_in_item_status">Tracking Enabled</string>
     <string name="fill_in_routine_status">Routine Enabled</string>
+
 
 
 </resources>

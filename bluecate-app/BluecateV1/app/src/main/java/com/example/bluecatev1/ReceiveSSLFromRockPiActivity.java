@@ -10,6 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.KeyTemplate;
+import com.google.crypto.tink.KeysetHandle;
+import com.google.crypto.tink.aead.AeadConfig;
+import com.google.crypto.tink.aead.AeadKeyTemplates;
+import com.google.crypto.tink.config.TinkConfig;
+import com.google.crypto.tink.hybrid.HybridConfig;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +38,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -38,6 +48,8 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
+
+import static com.google.crypto.tink.KeyTemplate.OutputPrefixType.TINK;
 
 //import com.google.crypto.tink.Aead;
 //import com.google.crypto.tink.CleartextKeysetHandle;
@@ -129,7 +141,8 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
         public void run() {
             try {
                 JSONObject testJSONObject = createSampleRoutine();
-                StartClient(testJSONObject);
+                String routine = getIntent().getStringExtra("routine");
+                StartClient(routine);
             } catch (KeyStoreException e) {
                 e.printStackTrace();
             } catch (UnrecoverableKeyException e) {
@@ -140,55 +153,34 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (GeneralSecurityException e) {
+                e.printStackTrace();
             }
         }
     }
 
-//    private void EncryptClientMessage(String message) throws GeneralSecurityException {
-//        AeadConfig.register();
-//        TinkConfig.register();
-//        HybridConfig.register();
-//
-//        com.google.crypto.tink.KeyTemplate keyTemplate = com.google.crypto.tink.KeyTemplate
-//                .create("www.bluecate.com", message.getBytes(), TINK);
-//
-//        KeysetHandle privateKeysetHandle = KeysetHandle.generateNew(keyTemplate);
-//        Aead aeadValue = new Aead() {
-//            @Override
-//            public byte[] encrypt(byte[] plaintext, byte[] associatedData) throws GeneralSecurityException {
-//                return new byte[0];
-//            }
-//
-//            @Override
-//            public byte[] decrypt(byte[] ciphertext, byte[] associatedData) throws GeneralSecurityException {
-//                return new byte[0];
-//            }
-//        };
-//
-//
-//        Aead aead = AeadFactory.getPrimitive(privateKeysetHandle);
-//
-//        // Encryption
-//        byte[] ciphertext = aead.encrypt(message.getBytes(), aad.getBytes());
-//
-//        // Decryption
-//        byte[] decrypted = aead.decrypt(ciphertext, aad.getBytes());
-//    }
-//
-//    //HybridEncryptWrapper isn't PUBLIC!!!
-//    public static HybridEncrypt getPrimitive(
-//            KeysetHandle keysetHandle, final KeyManager<HybridEncrypt> keyManager)
-//            throws GeneralSecurityException {
-//        Registry.registerPrimitiveWrapper(new HybridEncryptWrapper());
-//        final PrimitiveSet<HybridEncrypt> primitives =
-//                Registry.getPrimitives(keysetHandle, keyManager, HybridEncrypt.class);
-//        return Registry.wrap(primitives);
-//    }
-//
-//    public static HybridEncrypt getPrimitive(KeysetHandle keysetHandle)
-//            throws GeneralSecurityException {
-//        return getPrimitive(keysetHandle,null);
-//    }
+
+    private byte[] DecryptServerMessage(KeysetHandle keysetHandle, byte[] encryptedMessage) throws GeneralSecurityException {
+
+        // 2. Get the primitive.
+        Aead aead = keysetHandle.getPrimitive(Aead.class);
+
+        // ... or to decrypt a ciphertext.
+        byte[] decrypted = aead.decrypt(encryptedMessage, null);
+
+        return decrypted;
+    }
+
+    private byte[] EncryptClientMessage(KeysetHandle keysetHandle, String message) throws GeneralSecurityException {
+
+        // 2. Get the primitive.
+        Aead aead = keysetHandle.getPrimitive(Aead.class);
+
+        // 3. Use the primitive to encrypt a plaintext,
+        byte[] ciphertext = aead.encrypt(message.getBytes(), null);
+
+        return ciphertext;
+    }
 
     private JSONObject createSampleRoutine() throws JSONException {
         Routine testRoutine = new Routine("test routine",
@@ -196,15 +188,24 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
                 "test command",
                 true);
         JSONObject routineJSON = testRoutine.toJSON();
-        System.out.println(routineJSON);
 
         return routineJSON;
     }
 
-    private void StartClient(JSONObject clientObject) throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyManagementException{
+    private void StartClient(String clientObject) throws GeneralSecurityException {
         SSLSocket clientSocket=null;
         DataInputStream inputDataStream=null;
         DataOutputStream outputDataStream=null;
+
+        AeadConfig.register();
+        TinkConfig.register();
+        HybridConfig.register();
+
+        // 1. Generate the key material.
+        KeysetHandle keysetHandle = KeysetHandle.generateNew(
+                AeadKeyTemplates.AES128_GCM);
+
+        byte[] encryptedMessage = EncryptClientMessage(keysetHandle, clientObject);
 
         try{
             //Create a SSLServersocket
@@ -228,10 +229,6 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
             SSLSocketFactory factory = context.getSocketFactory();
             clientSocket = (SSLSocket) factory.createSocket(SERVER_IP, SERVER_PORT);
 
-            for(String protocol : clientSocket.getEnabledProtocols()){
-                Log.i(TAG, protocol);
-            }
-
             try{
                 runOnUiThread(new Runnable() {
                     @Override
@@ -240,8 +237,8 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
                 });
                 outputDataStream = new DataOutputStream(clientSocket.getOutputStream());
                 input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                final String clientJSONAsString = clientObject.toString();
-                byte[] serverMessageBytes = clientJSONAsString.getBytes();
+                final String clientJSONAsString = clientObject;
+                byte[] serverMessageBytes = clientObject.getBytes();
                 outputDataStream.write(serverMessageBytes);
                 outputDataStream.flush();
                 runOnUiThread(new Runnable() {
