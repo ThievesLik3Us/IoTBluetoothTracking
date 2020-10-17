@@ -1,10 +1,53 @@
 #!/usr/bin/python3
 import socket
+import struct
+import sys
+import time
 import ssl
 import json
 import rockpi_client
 from pymongo import MongoClient
 
+# Setup Server address and port
+HOST_ADDR = "User-PC" #socket.getfqdn() #socket.gethostbyname(socket.gethostname())
+HOST_PORT = 8082
+print("IP/Port: " + HOST_ADDR + "/" + str(HOST_PORT))
+
+def Multicast():
+    message = b'very important data'
+    multicast_group = ('224.3.29.71', 4446)
+
+    # Create the datagram socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+
+    # Set a timeout so the socket does not block indefinitely when trying
+    # to receive data.
+    #sock.settimeout(10)
+    # Set the time-to-live for messages to 1 so they do not go past the
+    # local network segment.
+    ttl = struct.pack('b', 32)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
+
+    try:
+        # Send data to the multicast group
+        print(sys.stderr, 'sending "%s"' % message)
+        sent = sock.sendto(message, multicast_group)
+
+        # Look for responses from all recipients
+        while True:
+            sent = sock.sendto(message, multicast_group)
+            print(sys.stderr, 'waiting to receive')
+            try:
+                data, server = sock.recvfrom(16)
+            except socket.timeout:
+                print(sys.stderr, 'timed out, no more responses')
+                break
+            else:
+                print(sys.stderr, 'received "%s" from %s' % (data, server))
+
+    finally:
+        print(sys.stderr, 'closing socket')
+        sock.close()
 
 def Process_Request(json_object):
     # Grab the command from the json object
@@ -28,12 +71,8 @@ def Process_Request(json_object):
         print("\nJSON After Delete")
         Send_Message(retrieved_json_object)
 
-
-
-# Setup Server address and port
-HOST_ADDR = socket.gethostname()
-HOST_PORT = 8082
-print("IP/Port: " + HOST_ADDR + "/" + str(HOST_PORT))
+#Multicast()
+#UDP_Broadcast()
 
 # Setup Client Certificates and key files
 CLIENT_SSL_CERT = '../certs/client.crt'

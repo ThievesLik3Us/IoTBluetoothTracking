@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 import socket
+import struct
+import sys
 import ssl
 import json
+import time
 from pymongo import MongoClient
 
 # Setup Client address and port
@@ -19,6 +22,33 @@ CA_SSL_KEY = './certs/ca.key'
 SERVER_SSL_CERT = '../certs/server.crt'
 SERVER_SSL_KEY = '../certs/server.key'
 SERVER_SNI_HOSTNAME = 'bluecate.com'
+
+def Multicast():
+    multicast_group = '224.3.29.71'
+    server_address = ('', 4446)
+
+    # Create the socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # Bind to the server address
+    sock.bind(server_address)
+
+    # Tell the operating system to add the socket to the multicast group
+    # on all interfaces.
+    group = socket.inet_aton(multicast_group) # This coneverts the IP Address into 32 bit packed binary format
+    mreq = struct.pack('4sL', group, socket.INADDR_ANY)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
+    # Receive/respond loop
+    while True:
+        print(sys.stderr, '\nwaiting to receive message')
+        data, address = sock.recvfrom(1024)
+
+        print(sys.stderr, 'received %s bytes from %s' % (len(data), address))
+        print(sys.stderr, data)
+
+        print(sys.stderr, 'sending acknowledgement to', address)
+        sock.sendto(b'ack', address)
 
 
 def initialize_socket():
@@ -55,6 +85,8 @@ def Send_Message(json_object):
     close_connection(client_connection)
 
 def main():
+    #Multicast()
+    #UDP_Broadcast()
     # Create Test JSON object and convert it to raw bytes
     json_test_object =  { "command":"Store", "username":"myuser1", "email":"test@aol.com", "password":"T3st123!" }
     Send_Message(json_test_object)

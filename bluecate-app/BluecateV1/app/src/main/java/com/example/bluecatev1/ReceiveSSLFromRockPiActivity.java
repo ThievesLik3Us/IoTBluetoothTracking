@@ -1,5 +1,7 @@
 package com.example.bluecatev1;
 
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.bluecatev1.MulticastingClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,8 +25,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.DatagramSocket;
+import java.net.MulticastSocket;
+import java.net.DatagramPacket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -71,11 +80,14 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
     TextView tvIP;
     TextView tvPort;
 
+    private MulticastingClient multicast_client;
+    private MulticastingServer multicast_server;
+
     private static final String TAG = "SendSSLToRockPiActivity";
 
     // Server Address & Port
-    public static String SERVER_IP = "10.0.0.167";
-
+    public static String SERVER_IP = "User-PC";//"10.0.0.167";
+    //public static String SERVER_IP = ""; //""127.0.0.1";
     public static final int SERVER_PORT = 8082;
     public static final String KEYSTORE_PASSWORD = "bluecate";
 
@@ -89,6 +101,7 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
     public static final String SERVER_SSL_CERT = "server.crt";
     public static final String SERVER_SSL_KEY = "server.key";
     public static final String SERVER_SNI_HOSTNAME = "bluecate.com";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,16 +121,39 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                ConnectToRockPiServer();
+                try {
+                    ConnectToRockPiServer();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
     }
 
+    private String getLocalIpAddress() throws UnknownHostException {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        assert wifiManager != null;
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int ipInt = wifiInfo.getIpAddress();
+        return InetAddress.getByAddress(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(ipInt).array()).getHostAddress();
+    }
+
     private BufferedReader input;
 
-    private void ConnectToRockPiServer() {
+    private void ConnectToRockPiServer() throws Exception {
+        Log.i(TAG, "Start Multicast...");
 
+        String localIP = getLocalIpAddress();
+        Log.i(TAG, localIP);
+        //multicast_client = new MulticastingClient();
+        //multicast_client.execute(localIP);
+        Log.i(TAG, "After Multicast...");
+
+        //multicast_server = new MulticastingServer();
+       // multicast_server.execute(localIP);
         Log.i(TAG, "Start SSL Client...");
         Thread clientThread = new Thread(new Thread1());
         clientThread.start();
@@ -189,6 +225,7 @@ public class ReceiveSSLFromRockPiActivity extends AppCompatActivity {
 //            throws GeneralSecurityException {
 //        return getPrimitive(keysetHandle,null);
 //    }
+
 
     private JSONObject createSampleRoutine() throws JSONException {
         Routine testRoutine = new Routine("test routine",
