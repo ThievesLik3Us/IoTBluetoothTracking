@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">BluecateV1</string>
+
+    <!--    Home Page Text-->
+    <string name="system_setup">Set Up BlueCate System</string>
+    <string name="routines">Routines</string>
+    <string name="item_tracking">Item Tracking</string>
+    <string name="about">About Us</string>
+    <string name="settings">Settings</string>
+    <string name="symbol">Company Logo</string>
+
+    <!--    Device Config Text-->
+    <string name="routine_setup_text">Enter Routine Info</string>
+    <string name="routine_name_text">Routine Name</string>
+    <string name="trigger_location_text">Location Alias</string>
+    <string name="enabled_text">Enabled</string>
+    <string name="save_routine_text">Save Routine</string>
+
+    <!--    Locations Text-->
+    <string name="location_text">Locations</string>
+    <string name="location1">Living Room</string>
+    <string name="location2">Bedroom</string>
+    <string name="location3">Kitchen</string>
+    <string name="location4">Bathroom</string>
+    <string name="generating">Generating Location</string>
+    <string name="command">Command</string>
+    <string name="item_setup_text">Setup Tracked Item</string>
+    <string name="item_name_text">Item Name</string>
+    <string name="calibrating">Connecting To Device...</string>
+    <string name="save_item_text">Save Item Configuration</string>
+
+
+    <!--    Placeholders -->
+    <string name="fill_in_location_alias">Basement</string>
+    <string name="fill_in_command">Turn On The Radio</string>
+    <string name="fill_in_generated_location">{ some raw location value }</string>
+    <string name="fill_in_item_status">Tracking Enabled</string>
+    <string name="fill_in_routine_status">Routine Enabled</string>
+
+
+</resources>
