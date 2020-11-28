@@ -149,6 +149,7 @@ word_replacement = {
 "host_gecko.h": "sl_bt_api.h",
 "gecko_bglib.h": "sl_bt_ncp_host.h",
 "gecko_bglib.c": "sl_bt_ncp_host_api.c \n #include <sl_bt_ncp_host.c>",
+"native_gecko.h": "sl_bt_api.h",
 # Host API Changes
 "BGLIB_DEFINE": "SL_BT_API_DEFINE",
 "BGLIB_INITIALIZE": "SL_BT_API_INITIALIZE",
