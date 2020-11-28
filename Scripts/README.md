@@ -18,4 +18,6 @@ and the following source files:
 Below is an example of how to use the script
 ```
 $python3 convert_sdk2_to_sdk3.py app.c
+OR
+$python3 convert_sdk2_to_sdk3.py C:\Path\to\file\app.c
 ```
