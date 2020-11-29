@@ -1,6 +1,6 @@
 import sys
 
-# left side is sdk 2 replaced with right side sdk 3
+# left side is sdk 2 (SSv4) replaced with right side sdk 3 (SSv5)
 word_replacement = {
 # BGAPI Classes Changed
 "le_gap":"gap",
@@ -14,6 +14,7 @@ word_replacement = {
 "gecko_cmd_le_gap_set_mode": "sl_bt_advertiser_(start_OR_stop)",
 "gecko_cmd_le_gap_bt5_set_mode": "sl_bt_advertiser_???",
 "gecko_cmd_le_gap_set_adv_data": "sl_bt_advertiser_set_data OR sl_bt_ota_set_advertising_data",
+"gecko_cmd_le_gap_bt5_set_adv_data": "sl_bt_advertiser_set_data OR sl_bt_ota_set_advertising_data",
 "gecko_cmd_le_gap_set_adv_parameters": "sl_bt_advertiser_set_timing OR sl_bt_advertiser_set_channel_map",
 "gecko_cmd_le_gap_set_adv_timeout": "sl_bt_advertiser_set_timing",
 "gecko_cmd_le_gap_set_advertise_timing": "sl_bt_advertiser_set_timing",
@@ -90,6 +91,28 @@ word_replacement = {
 "struct gecko_msg_evt_le_connection_phy_status_t": "sl_bt_evt_connection_phy_status_t",
 "gecko_msg_evt_le_connection_phy_status_t": "sl_bt_evt_connection_phy_status_t",
 # BGAPI Enumerations and Definitions Changed
+"gap_address_type_public": "gap_public_address",
+"gap_address_type_random": "gap_static_address",
+"gap_address_type_public_identity": "gap_random_resolvable_address",
+"gap_address_type_random_identity": "gap_random_nonresolvable_address",
+"gap_phy_1m": "gap_1m_phy",
+"gap_phy_2m": "gap_2m_phy",
+"gap_phy_coded": "gap_coded_phy",
+"gap_non_discoverable": "advertiser_non_discoverable",
+"gap_limited_discoverable": "advertiser_limited_discoverable",
+"gap_general_discoverable": "advertiser_general_discoverable",
+"gap_broadcast": "advertiser_broadcast",
+"gap_user_data": "advertiser_user_data",
+"gap_non_connectable": "advertiser_non_connectable",
+"gap_directed_connectable": "advertiser_directed_connectable",
+"gap_undirected_connectable": "advertiser_connectable_scannable",
+"gap_connectable_scannable": "advertiser_connectable_scannable",
+"gap_scannable_non_connectable": "advertiser_scannable_non_connectable",
+"gap_connectable_non_scannable": "advertiser_connectable_non_scannable",
+"gap_discover_limited": "scanner_discover_limited",
+"gap_discover_generic": "scanner_discover_generic",
+"gap_discover_observation": "scanner_discover_observation",
+
 "le_gap_address_type_public": "gap_public_address",
 "le_gap_address_type_random": "gap_static_address",
 "le_gap_address_type_public_identity": "gap_random_resolvable_address",
@@ -111,6 +134,7 @@ word_replacement = {
 "le_gap_discover_limited": "scanner_discover_limited",
 "le_gap_discover_generic": "scanner_discover_generic",
 "le_gap_discover_observation": "scanner_discover_observation",
+
 "FLASH_PS_KEY_CTUNE": "NVM_KEY_CTUNE",
 # C API Changes
 "struct gecko_cmd_packet": "sl_bt_msg_t",
@@ -156,7 +180,13 @@ word_replacement = {
 "BGLIB_INITIALIZE_NONBLOCK": "SL_BT_API_INITIALIZE_NONBLOCK",
 "struct gecko_cmd_packet": "sl_bt_msg_t",
 "gecko_cmd_packet": "sl_bt_msg_t",
-"BGLIB_MSG_ID": "SL_BT_MSG_ID"
+"BGLIB_MSG_ID": "SL_BT_MSG_ID",
+# Catch all last conversions
+"gecko_cmd": "sl_bt",
+"gecko_msg_evt": "sl_bt_evt",
+"appMain": "sl_bt_on_event",
+"gecko_init": "",
+"gecko_evt": "sl_bt_evt"
 }
 
 if len(sys.argv) == 1:
