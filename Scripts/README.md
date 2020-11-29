@@ -10,7 +10,7 @@ of the code. The rest is up to the developer to switch and decide what is the be
 • **sl_bt_types.h** (in SDK_DIR/protocol/bluetooth/inc)  
 • **sl_bt_api.h** (in SDK_DIR/protocol/bluetooth/inc)  
 • **sl_bt_ncp_host.h** (in SDK_DIR/protocol/bluetooth/inc)  
-• **sl_bt_stack_config.h** (in SDK_DIR/protocol/bluetooth/inc)  
+• **sl_bt_stack_config.h** (in SDK_DIR/protocol/bluetooth/inc) -  needs to be included for sl_bt_msg_t  
 and the following source files:  
 • **sl_bt_ncp_host_api.c** (in SDK_DIR/protocol/bluetooth/src)  
 • **sl_bt_ncp_host.c** (in SDK_DIR/protocol/bluetooth/src)  
