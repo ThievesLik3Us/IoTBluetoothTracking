@@ -14,6 +14,7 @@ of the code. The rest is up to the developer to switch and decide what is the be
 and the following source files:  
 • **sl_bt_ncp_host_api.c** (in SDK_DIR/protocol/bluetooth/src)  
 • **sl_bt_ncp_host.c** (in SDK_DIR/protocol/bluetooth/src)  
+• **if uint_8 is missing then add stdint.h**
 
 
 Below is an example of how to use the script
