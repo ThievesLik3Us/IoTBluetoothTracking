@@ -49,7 +49,7 @@ word_replacement = {
 "gecko_cmd_le_connection_set_parameters": "sl_bt_connection_set_parameters",
 "gecko_cmd_le_connection_set_timing_parameters": "sl_bt_connection_set_parameters",
 "gecko_cmd_le_connection_set_phy": "sl_bt_connection_set_preferred_phy",
-"gecko_cmd_system_get_bt_address": "sl_bt_system_get_identity_address",
+"gecko_cmd_system_get_bt_address": "sl_bt_system_get_identity_address(bd_addr* address, uint8_t* type)",
 "gecko_cmd_system_set_bt_address ": "sl_bt_system_set_identity_address",
 "gecko_cmd_system_set_tx_power": "sl_bt_system_set_max_tx_power",
 "gecko_cmd_system_set_device_name": "sl_bt_ota_set_device_name",
@@ -90,6 +90,8 @@ word_replacement = {
 "gecko_evt_le_connection_phy_status_id": "sl_bt_evt_connection_phy_status_id",
 "struct gecko_msg_evt_le_connection_phy_status_t": "sl_bt_evt_connection_phy_status_t",
 "gecko_msg_evt_le_connection_phy_status_t": "sl_bt_evt_connection_phy_status_t",
+"struct gecko_msg_system_boot_evt_t": "sl_bt_evt_system_boot_t",
+"gecko_msg_system_boot_evt_t": "sl_bt_evt_system_boot_t",
 # BGAPI Enumerations and Definitions Changed
 "gap_address_type_public": "gap_public_address",
 "gap_address_type_random": "gap_static_address",
@@ -181,11 +183,18 @@ word_replacement = {
 "struct gecko_cmd_packet": "sl_bt_msg_t",
 "gecko_cmd_packet": "sl_bt_msg_t",
 "BGLIB_MSG_ID": "SL_BT_MSG_ID",
+# Status Code Changes
+"bg_err_success": "SL_STATUS_OK",
+# Log Message conversions
+"printLog": "app_log",
+"initLog();": "",
 # Catch all last conversions
 "gecko_cmd": "sl_bt",
-"gecko_msg_evt": "sl_bt_evt",
+"struct gecko_msg": "sl_bt",
+"gecko_msg": "sl_bt",
 "appMain": "sl_bt_on_event",
-"gecko_init": "",
+"gecko_init(pconfig)": "sl_bt_init_stack()",
+"gecko_init": "sl_bt_init_stack(); REMOVE ME-->",
 "gecko_evt": "sl_bt_evt"
 }
 
