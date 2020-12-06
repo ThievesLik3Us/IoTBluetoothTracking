@@ -122,6 +122,7 @@ word_replacement = {
 "le_gap_phy_1m": "gap_1m_phy",
 "le_gap_phy_2m": "gap_2m_phy",
 "le_gap_phy_coded": "gap_coded_phy",
+"le_gap_phy_type": " gap_phy_type_t",
 "le_gap_non_discoverable": "advertiser_non_discoverable",
 "le_gap_limited_discoverable": "advertiser_limited_discoverable",
 "le_gap_general_discoverable": "advertiser_general_discoverable",
@@ -142,16 +143,16 @@ word_replacement = {
 "struct gecko_cmd_packet": "sl_bt_msg_t",
 "gecko_cmd_packet": "sl_bt_msg_t",
 "BGLIB_MSG_ID": "SL_BT_MSG_ID",
-"struct gecko_cmd_packet* gecko_wait_event()": "sl_status_t sl_bt_wait_event(sl_bt_msg_t* evt)",
-"gecko_cmd_packet* gecko_wait_event()": "sl_bt_wait_event(sl_bt_msg_t* evt)",
-"gecko_wait_event()": "sl_bt_wait_event(sl_bt_msg_t* evt)",
-"struct gecko_cmd_packet* gecko_peek_event()": "sl_status_t sl_bt_pop_event(sl_bt_msg_t* evt)",
-"gecko_cmd_packet* gecko_peek_event()": "sl_bt_pop_event(sl_bt_msg_t* evt)",
-"gecko_peek_event()": "sl_bt_pop_event(sl_bt_msg_t* evt)",
+"struct gecko_cmd_packet* gecko_wait_event()": "sl_status_t sl_bt_wait_event(sl_bt_msg_t* evt); // Remove declaration if evt already declared",
+"gecko_cmd_packet* gecko_wait_event()": "sl_bt_wait_event(sl_bt_msg_t* evt); // Remove declaration if evt already declared",
+"gecko_wait_event()": "sl_bt_wait_event(sl_bt_msg_t* evt); // Remove declaration if evt already declared",
+"struct gecko_cmd_packet* gecko_peek_event()": "sl_status_t sl_bt_pop_event(sl_bt_msg_t* evt); // Remove declaration if evt already declared ",
+"gecko_cmd_packet* gecko_peek_event()": "sl_bt_pop_event(sl_bt_msg_t* evt); // Remove declaration if evt already declared",
+"gecko_peek_event()": "sl_bt_pop_event(sl_bt_msg_t* evt); // Remove declaration if evt already declared",
 "int gecko_event_pending()": "bool sl_bt_event_pending()",
 "gecko_event_pending()": "sl_bt_event_pending()",
-"errorcode_t gecko_stack_init(const gecko_configuration_t *config)": "sl_status_t sl_bt_init_stack(const sl_bt_configuration_t *config)",
-"gecko_stack_init(const gecko_configuration_t *config)": "sl_bt_init_stack(const sl_bt_configuration_t *config)",
+"errorcode_t gecko_stack_init(const gecko_configuration_t *config)": "sl_status_t sl_bt_init_stack(const sl_bt_configuration_t *config); // Remove declaration if config already declared",
+"gecko_stack_init(const gecko_configuration_t *config)": "sl_bt_init_stack(const sl_bt_configuration_t *config); // Remove declaration if config already declared",
 "gecko_stack_init": "sl_bt_init_stack",
 "gecko_can_sleep_ms()": "",
 "gecko_can_sleep_ticks": "",
@@ -169,6 +170,14 @@ word_replacement = {
 "gecko_stack_init": "sl_bt_init_stack",
 "gecko_bgapi_class_": "sl_bt_class_",
 "gecko_init_": "sl_bt_init_",
+# Sync conversions
+# "gecko_msg_sync_open_rsp_t": "",
+# "gecko_msg_sync_close_rsp_t": "",
+"gecko_msg_sync_opened_evt_t": "sl_bt_evt_sync_opened_t",
+"gecko_msg_sync_closed_evt_t": "sl_bt_evt_sync_closed_t",
+"gecko_msg_sync_data_evt_t": "sl_bt_evt_sync_data_t",
+"": "",
+"": "",
 # Headers Changed (may not be exact translation)
 # For added convience place all the headers in
 "/* Bluetooth stack headers */": "/* Bluetooth stack headers */\n\
@@ -177,7 +186,8 @@ word_replacement = {
 #include \"sl_bt_api.h\"\n\
 #include \"sl_bt_types.h\"\n\
 #include \"sl_bt_ncp_host.h\"\n\
-#include \"sl_bt_stack_config.h\"\n",
+#include \"sl_bt_stack_config.h\"\n\
+#include \"sl_app_log.h\" \\ Install Bluetooth->Utility->Log and Services->IOStream->IOStream:USART",
 "#include \"bg_types.h\"": "", # Conversion = sl_bt_types.h
 "#include \"bg_errorcodes.h\"": "", # Conversion = sl_status.h
 "#include \"host_gecko.h\"": "", # Conversion = sl_bt_api.h
@@ -195,7 +205,7 @@ word_replacement = {
 # Status Code Changes
 "bg_err_success": "SL_STATUS_OK",
 # Log Message conversions
-"printLog": "app_log",
+"printLog": "sl_app_log",
 "initLog();": "",
 # Catch all last conversions
 "gecko_cmd": "sl_bt",
@@ -204,7 +214,11 @@ word_replacement = {
 "appMain": "sl_bt_on_event",
 "gecko_init(pconfig)": "sl_bt_init_stack()",
 "gecko_init": "sl_bt_init_stack(); REMOVE ME-->",
-"gecko_evt": "sl_bt_evt"
+"gecko_evt": "sl_bt_evt",
+# Ensure Standard types
+"uint8 ": "uint8_t ",
+"uint16 ": "uint16_t ",
+"uint32 ": "uint32_t ",
 }
 
 if len(sys.argv) == 1:
