@@ -49,7 +49,7 @@ word_replacement = {
 "gecko_cmd_le_connection_set_parameters": "sl_bt_connection_set_parameters",
 "gecko_cmd_le_connection_set_timing_parameters": "sl_bt_connection_set_parameters",
 "gecko_cmd_le_connection_set_phy": "sl_bt_connection_set_preferred_phy",
-"gecko_cmd_system_get_bt_address": "sl_bt_system_get_identity_address(bd_addr* address, uint8_t* type)",
+"gecko_cmd_system_get_bt_address": "sl_bt_system_get_identity_address(bd_addr* address, uint8_t* type); // FIX THIS LINE",
 "gecko_cmd_system_set_bt_address ": "sl_bt_system_set_identity_address",
 "gecko_cmd_system_set_tx_power": "sl_bt_system_set_max_tx_power",
 "gecko_cmd_system_set_device_name": "sl_bt_ota_set_device_name",
@@ -170,12 +170,21 @@ word_replacement = {
 "gecko_bgapi_class_": "sl_bt_class_",
 "gecko_init_": "sl_bt_init_",
 # Headers Changed (may not be exact translation)
-"bg_types.h": "sl_bt_types.h",
-"bg_errorcodes.h": "sl_status.h",
-"host_gecko.h": "sl_bt_api.h",
-"gecko_bglib.h": "sl_bt_ncp_host.h",
-"gecko_bglib.c": "sl_bt_ncp_host_api.c \n #include <sl_bt_ncp_host.c>",
-"native_gecko.h": "sl_bt_api.h",
+# For added convience place all the headers in
+"/* Bluetooth stack headers */": "/* Bluetooth stack headers */\n\
+#include \"stdint.h\"\n\
+#include \"sl_status.h\"\n\
+#include \"sl_bt_api.h\"\n\
+#include \"sl_bt_types.h\"\n\
+#include \"sl_bt_ncp_host.h\"\n\
+#include \"sl_bt_stack_config.h\"\n",
+"#include \"bg_types.h\"": "", # Conversion = sl_bt_types.h
+"#include \"bg_errorcodes.h\"": "", # Conversion = sl_status.h
+"#include \"host_gecko.h\"": "", # Conversion = sl_bt_api.h
+"#include \"gecko_bglib.h\"": "", # Conversion = sl_bt_ncp_host.h
+"#include \"native_gecko.h\"": "", # Conversion = sl_bt_api.h
+"#include \"gecko_bglib.c\"": "#include \"sl_bt_ncp_host_api.c\"\n #include \"sl_bt_ncp_host.c>\"\n",
+
 # Host API Changes
 "BGLIB_DEFINE": "SL_BT_API_DEFINE",
 "BGLIB_INITIALIZE": "SL_BT_API_INITIALIZE",
