@@ -2,10 +2,6 @@ import sys
 
 # left side is sdk 2 (SSv4) replaced with right side sdk 3 (SSv5)
 word_replacement = {
-# BGAPI Classes Changed
-"le_gap":"gap",
-"le_connection":"connection",
-"flash":"nvm",
 # BGAPI Commands Changed
 "gecko_cmd_le_gap_enable_whitelisting": "sl_bt_gap_enable_whitelisting",
 "gecko_cmd_le_gap_set_data_channel_classification": "sl_bt_gap_set_data_channel_classification",
@@ -207,6 +203,10 @@ word_replacement = {
 # Log Message conversions
 "printLog": "sl_app_log",
 "initLog();": "",
+# BGAPI Classes Changed
+"le_gap":"gap",
+"le_connection":"connection",
+"flash":"nvm",
 # Catch all last conversions
 "gecko_cmd": "sl_bt",
 "struct gecko_msg": "sl_bt",
