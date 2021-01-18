@@ -88,28 +88,6 @@ word_replacement = {
 "gecko_msg_evt_le_connection_phy_status_t": "sl_bt_evt_connection_phy_status_t",
 "struct gecko_msg_system_boot_evt_t": "sl_bt_evt_system_boot_t",
 "gecko_msg_system_boot_evt_t": "sl_bt_evt_system_boot_t",
-# BGAPI Enumerations and Definitions Changed
-"gap_address_type_public": "gap_public_address",
-"gap_address_type_random": "gap_static_address",
-"gap_address_type_public_identity": "gap_random_resolvable_address",
-"gap_address_type_random_identity": "gap_random_nonresolvable_address",
-"gap_phy_1m": "gap_1m_phy",
-"gap_phy_2m": "gap_2m_phy",
-"gap_phy_coded": "gap_coded_phy",
-"gap_non_discoverable": "advertiser_non_discoverable",
-"gap_limited_discoverable": "advertiser_limited_discoverable",
-"gap_general_discoverable": "advertiser_general_discoverable",
-"gap_broadcast": "advertiser_broadcast",
-"gap_user_data": "advertiser_user_data",
-"gap_non_connectable": "advertiser_non_connectable",
-"gap_directed_connectable": "advertiser_directed_connectable",
-"gap_undirected_connectable": "advertiser_connectable_scannable",
-"gap_connectable_scannable": "advertiser_connectable_scannable",
-"gap_scannable_non_connectable": "advertiser_scannable_non_connectable",
-"gap_connectable_non_scannable": "advertiser_connectable_non_scannable",
-"gap_discover_limited": "scanner_discover_limited",
-"gap_discover_generic": "scanner_discover_generic",
-"gap_discover_observation": "scanner_discover_observation",
 
 "le_gap_address_type_public": "gap_public_address",
 "le_gap_address_type_random": "gap_static_address",
@@ -133,8 +111,32 @@ word_replacement = {
 "le_gap_discover_limited": "scanner_discover_limited",
 "le_gap_discover_generic": "scanner_discover_generic",
 "le_gap_discover_observation": "scanner_discover_observation",
-
+"evt_le_gap_extended_scan_response": "evt_scanner_scan_report",
 "FLASH_PS_KEY_CTUNE": "NVM_KEY_CTUNE",
+# BGAPI Enumerations and Definitions Changed
+"gap_address_type_public": "gap_public_address",
+"gap_address_type_random": "gap_static_address",
+"gap_address_type_public_identity": "gap_random_resolvable_address",
+"gap_address_type_random_identity": "gap_random_nonresolvable_address",
+"gap_phy_1m": "gap_1m_phy",
+"gap_phy_2m": "gap_2m_phy",
+"gap_phy_coded": "gap_coded_phy",
+"gap_non_discoverable": "advertiser_non_discoverable",
+"gap_limited_discoverable": "advertiser_limited_discoverable",
+"gap_general_discoverable": "advertiser_general_discoverable",
+"gap_broadcast": "advertiser_broadcast",
+"gap_user_data": "advertiser_user_data",
+"gap_non_connectable": "advertiser_non_connectable",
+"gap_directed_connectable": "advertiser_directed_connectable",
+"gap_undirected_connectable": "advertiser_connectable_scannable",
+"gap_connectable_scannable": "advertiser_connectable_scannable",
+"gap_scannable_non_connectable": "advertiser_scannable_non_connectable",
+"gap_connectable_non_scannable": "advertiser_connectable_non_scannable",
+"gap_discover_limited": "scanner_discover_limited",
+"gap_discover_generic": "scanner_discover_generic",
+"gap_discover_observation": "scanner_discover_observation",
+
+
 # C API Changes
 "struct gecko_cmd_packet": "sl_bt_msg_t",
 "gecko_cmd_packet": "sl_bt_msg_t",
@@ -150,6 +152,8 @@ word_replacement = {
 "errorcode_t gecko_stack_init(const gecko_configuration_t *config)": "sl_status_t sl_bt_init_stack(const sl_bt_configuration_t *config); // Remove declaration if config already declared",
 "gecko_stack_init(const gecko_configuration_t *config)": "sl_bt_init_stack(const sl_bt_configuration_t *config); // Remove declaration if config already declared",
 "gecko_stack_init": "sl_bt_init_stack",
+"gecko_bgapi_class_": "sl_bt_class_",
+"": "",
 "gecko_can_sleep_ms()": "",
 "gecko_can_sleep_ticks": "",
 "gecko_sleep_for_ms": "",
@@ -166,6 +170,7 @@ word_replacement = {
 "gecko_stack_init": "sl_bt_init_stack",
 "gecko_bgapi_class_": "sl_bt_class_",
 "gecko_init_": "sl_bt_init_",
+
 # Sync conversions
 # "gecko_msg_sync_open_rsp_t": "",
 # "gecko_msg_sync_close_rsp_t": "",
@@ -183,7 +188,7 @@ word_replacement = {
 #include \"sl_bt_types.h\"\n\
 #include \"sl_bt_ncp_host.h\"\n\
 #include \"sl_bt_stack_config.h\"\n\
-#include \"sl_app_log.h\" \\ Install Bluetooth->Utility->Log and Services->IOStream->IOStream:USART",
+#include \"sl_app_log.h\" \\\ Install Bluetooth->Utility->Log and Services->IOStream->IOStream:USART",
 "#include \"bg_types.h\"": "", # Conversion = sl_bt_types.h
 "#include \"bg_errorcodes.h\"": "", # Conversion = sl_status.h
 "#include \"host_gecko.h\"": "", # Conversion = sl_bt_api.h
