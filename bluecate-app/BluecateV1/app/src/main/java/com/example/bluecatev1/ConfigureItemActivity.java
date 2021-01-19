@@ -59,17 +59,14 @@ public class ConfigureItemActivity extends AppCompatActivity {
         newItem.fromJSON(itemJSON);
         System.out.println("newItem name " + newItem.getItemName());
 
-//        goToSendToRockPiActivity();
-
-//        goToReceiveFromRockPiActivity();
-
-//        goToSendSSLToRockPiActivity();
+        goToSendSSLToRockPiActivity(itemJSON);
 
 
     }
 
-    private void goToSendSSLToRockPiActivity() {
+    private void goToSendSSLToRockPiActivity(JSONObject item) {
         Intent intent = new Intent(this, SendSSLToRockPiActivity.class);
+        intent.putExtra("item", item.toString());
         startActivity(intent);
     }
 

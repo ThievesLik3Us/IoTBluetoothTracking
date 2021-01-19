@@ -1,0 +1,40 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+include:
+- path: ''
+  file_list:
+  - {path: app.h}
+package: Bluetooth
+configuration:
+- {name: SL_STACK_SIZE, value: '2048'}
+- {name: SL_HEAP_SIZE, value: '8630'}
+description: |
+  This example demonstrates the bare minimum needed for a Bluetooth C application that allows Over-the-Air Device Firmware Upgrading (OTA DFU). The application starts advertising after boot and restarts advertising after a connection is closed.
+label: app-server-SSv5
+source:
+- {path: main.c}
+- {path: app.c}
+- {path: app_properties.c}
+project_name: app-server-SSv5
+quality: production
+component:
+- {id: board_control}
+- {id: app_log}
+- instance: [vcom]
+  id: iostream_usart
+- {id: mpu}
+- {id: iostream_usart_core}
+- {id: component_catalog}
+- {id: ota_dfu}
+- {id: bootloader_interface}
+- {id: rail_util_pti}
+- {id: app_assert}
+- {id: bluetooth}
+- {id: EFR32BG22C224F512IM40}
+other_file:
+- {path: create_bl_files.bat}
+- {path: create_bl_files.sh}
+tag: ['hardware:rf:band:2400']
+category: Bluetooth Examples
+toolchain_settings: []
+ui_hints: {}
+

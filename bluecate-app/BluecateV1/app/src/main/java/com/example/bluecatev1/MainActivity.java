@@ -46,19 +46,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button about_button = (Button) findViewById(R.id.button_about);
+        Button about_button = (Button) findViewById(R.id.button_settings);
         about_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToSendSSLToRockPiActivity();
             }
         });
 
-        Button settings_button = (Button) findViewById(R.id.button_settings);
+        Button settings_button = (Button) findViewById(R.id.button_about);
         settings_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToReceiveSSLFromRockPiActivity();
             }
         });
 

@@ -14,6 +14,13 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.KeysetHandle;
+import com.google.crypto.tink.aead.AeadConfig;
+import com.google.crypto.tink.aead.AeadKeyTemplates;
+import com.google.crypto.tink.config.TinkConfig;
+import com.google.crypto.tink.hybrid.HybridConfig;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -35,6 +42,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -63,7 +71,7 @@ public class SendSSLToRockPiActivity extends AppCompatActivity {
     // Server Address & Port
     public static String SERVER_IP = "";
     public static final int SERVER_PORT = 8082;
-    public static final String SERVER_MESSAGE = "Hello, world! From Android Server";
+    public static String SERVER_MESSAGE = "Hello, world! From Android Server";
     public static final String KEYSTORE_PASSWORD = "bluecate";
 
     // Client certificates and key files
@@ -137,15 +145,50 @@ public class SendSSLToRockPiActivity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (KeyManagementException e) {
                 e.printStackTrace();
+            } catch (GeneralSecurityException e) {
+                e.printStackTrace();
             }
         }
     }
 
 
-    private void StartServer() throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyManagementException {
+    private byte[] DecryptClientMessage(KeysetHandle keysetHandle, byte[] encryptedMessage) throws GeneralSecurityException {
+
+        // 2. Get the primitive.
+        Aead aead = keysetHandle.getPrimitive(Aead.class);
+
+        // ... or to decrypt a ciphertext.
+        byte[] decrypted = aead.decrypt(encryptedMessage, null);
+
+        return decrypted;
+    }
+
+    private byte[] EncryptServerMessage(KeysetHandle keysetHandle, String message) throws GeneralSecurityException {
+
+        // 2. Get the primitive.
+        Aead aead = keysetHandle.getPrimitive(Aead.class);
+
+        // 3. Use the primitive to encrypt a plaintext,
+        byte[] ciphertext = aead.encrypt(message.getBytes(), null);
+
+        return ciphertext;
+
+    }
+
+
+    private void StartServer() throws GeneralSecurityException {
         SSLServerSocket serverSocket=null;
         DataInputStream inputDataStream=null;
         DataOutputStream outputDataStream=null;
+        String item = getIntent().getStringExtra("item");
+
+        AeadConfig.register();
+        TinkConfig.register();
+        HybridConfig.register();
+
+        // 1. Generate the key material.
+        KeysetHandle keysetHandle = KeysetHandle.generateNew(
+                AeadKeyTemplates.AES128_GCM);
 
         SSLSocket sslSocket = null;
         try{
@@ -185,8 +228,14 @@ public class SendSSLToRockPiActivity extends AppCompatActivity {
 //                    String dataString = dataInput.toString();
 //                    String inputUpper=dataString.toUpperCase();
 
+                SERVER_MESSAGE = item;
                 byte[] serverMessageBytes = SERVER_MESSAGE.getBytes();
-                outputDataStream.write(serverMessageBytes);
+
+                byte[] encryptData = EncryptServerMessage(keysetHandle, SERVER_MESSAGE);
+                byte[] decryptMessage = DecryptClientMessage(keysetHandle, encryptData);
+
+                outputDataStream.write(decryptMessage);
+//                outputDataStream.write(serverMessageBytes);
 //                outputDataStream.writeUTF(SERVER_MESSAGE);
                 outputDataStream.flush();
                 runOnUiThread(new Runnable() {
@@ -198,10 +247,14 @@ public class SendSSLToRockPiActivity extends AppCompatActivity {
 
                 final String bufferInput = input.readLine();
                 Log.i(TAG, String.format("bufferInput: %s", bufferInput));
+
+//                final byte[] decryptedMessage = DecryptClientMessage(bufferInput.getBytes());
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         tvClientMessages.setText("client: " + bufferInput);
+//                        tvClientMessages.setText("client: " + decryptedMessage.toString());
                     }
                 });
 //                    Log.i(TAG, String.format("dataInput: %s", dataInput));
