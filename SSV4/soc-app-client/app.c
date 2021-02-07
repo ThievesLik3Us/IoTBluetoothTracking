@@ -44,12 +44,12 @@ static bool serviceMatch(uint8_t *data, uint8_t len)
   uint8_t adFieldLength;
   uint8_t adFieldType;
   uint8_t i = 0, j;
-  printLog("packet length %d\r\n", len);
+//  printLog("packet length %d\r\n", len);
   // Parse advertisement packet
   while (i < len) {
     adFieldLength = data[i];
     adFieldType = data[i + 1];
-    printLog("adField type %d \r\n", adFieldType);
+//    printLog("adField type %d \r\n", adFieldType);
     if (adFieldType == 0x06 || adFieldType == 0x07) {
 
       // Look through all the UUID looking for periodic sync
@@ -217,16 +217,18 @@ void appMain(gecko_configuration_t *pconfig)
          gecko_cmd_le_gap_set_discovery_extended_scan_response(true);
      break;
 
-     // Comment this in and the above code out for 2M PHY connection
-//      case gecko_evt_system_boot_id:
+//   Comment this in and the above code out for 2M PHY connection
+//   case gecko_evt_system_boot_id:
 //
 //        /* LAB TASK 2M PHY CONNECTION: start scanning */
-//       bootMessage(&(evt->data.evt_system_boot));
+//     bootMessage(&(evt->data.evt_system_boot));
 //	   printLog("BT5 test client started\r\n");
 //	   /*set the discovery type for both PHYs to passive */
 //	   gecko_cmd_le_gap_set_discovery_type(le_gap_phy_1m|le_gap_phy_coded,0);
-//
+
+//LAB TASK EXTENDED ADVT:
 //	   /* 200 ms scan window min/max*/
+//     case gecko_evt_system_boot_id:
 //	   gecko_cmd_le_gap_set_discovery_timing(le_gap_phy_1m|le_gap_phy_coded,320,320);
 //
 //	   /* start listening for devices to connect to */
@@ -335,30 +337,30 @@ void appMain(gecko_configuration_t *pconfig)
 		   break;
 
         /* LAB TASK: 2M PHY CONNECTION: external signal handling event*/
-		  case gecko_evt_system_external_signal_id:
-		         /* */
-		       if (evt->data.evt_system_external_signal.extsignals==1){
-		             printLog("Switching scanning PHY\r\n");
-		             gecko_cmd_le_gap_end_procedure();
-		             if(scanning_phy == le_gap_phy_1m){
-		                 scanning_phy = le_gap_phy_coded;
-		                 phy_index = 2;
-		             }
-		             else if (scanning_phy == le_gap_phy_coded){
-		                 scanning_phy = le_gap_phy_1m;
-		             }
-		             printLog(" Starting scanning on %s PHY \r\n", getPhyName(scanning_phy).string);
-		             gecko_cmd_le_gap_start_discovery(scanning_phy, le_gap_discover_generic);
-		       }
-		       else if (evt->data.evt_system_external_signal.extsignals==2){
-
-		             //use PB1 to increment the desired PHY
-		             phy_index = (phy_index+1)%4;
-		             desired_phy = supported_phys[phy_index];
-		             gecko_cmd_le_connection_set_preferred_phy(connection, desired_phy,  le_gap_phy_1m|le_gap_phy_2m|le_gap_phy_coded );
-
-		       }
-		   break;
+//		  case gecko_evt_system_external_signal_id:
+//		         /* */
+//		       if (evt->data.evt_system_external_signal.extsignals==1){
+//		             printLog("Switching scanning PHY\r\n");
+//		             gecko_cmd_le_gap_end_procedure();
+//		             if(scanning_phy == le_gap_phy_1m){
+//		                 scanning_phy = le_gap_phy_coded;
+//		                 phy_index = 2;
+//		             }
+//		             else if (scanning_phy == le_gap_phy_coded){
+//		                 scanning_phy = le_gap_phy_1m;
+//		             }
+//		             printLog(" Starting scanning on %s PHY \r\n", getPhyName(scanning_phy).string);
+//		             gecko_cmd_le_gap_start_discovery(scanning_phy, le_gap_discover_generic);
+//		       }
+//		       else if (evt->data.evt_system_external_signal.extsignals==2){
+//
+//		             //use PB1 to increment the desired PHY
+//		             phy_index = (phy_index+1)%4;
+//		             desired_phy = supported_phys[phy_index];
+//		             gecko_cmd_le_connection_set_preferred_phy(connection, desired_phy,  le_gap_phy_1m|le_gap_phy_2m|le_gap_phy_coded );
+//
+//		       }
+//		   break;
 
 		  case gecko_evt_sync_opened_id:
 		   printLog("evt_sync_opened\r\n");
