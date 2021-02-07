@@ -227,62 +227,63 @@ void appMain(gecko_configuration_t *pconfig)
     /* Handle events */
     switch (BGLIB_MSG_ID(evt->header)) {
 
+//      case gecko_evt_system_boot_id:
+//        bootMessage(&(evt->data.evt_system_boot));
+//
+//        /* LAB TASK MULTIPLE ADVT: iBeacons */
+//        bcnSetupAdvBeaconing(); //iBeacons
+//        printLog("boot event - starting advertising\r\n");
+////        gecko_cmd_le_gap_set_advertise_timing(HANDLE_DEMO, 160, 160, 0, 0);
+////
+////        /* LAB TASK 2M PHY connection: enable scan request */
+////        gecko_cmd_le_gap_set_advertise_report_scan_request(HANDLE_DEMO,true); //Stop continuous output
+////
+////        gecko_cmd_le_gap_start_advertising(HANDLE_DEMO, le_gap_general_discoverable, le_gap_connectable_scannable);
+//
+//        /* LAB TASK MULTIPLE ADVT: EddyStone */
+////        gecko_cmd_le_gap_bt5_set_adv_data(HANDLE_EDDYSTONE, ADV_PKT, 30, eddystone_data);
+////		gecko_cmd_le_gap_set_advertise_configuration(HANDLE_EDDYSTONE,0x01);
+////		gecko_cmd_le_gap_set_advertise_timing(HANDLE_EDDYSTONE,160,160,0,0);
+////		gecko_cmd_le_gap_set_advertise_channel_map(HANDLE_EDDYSTONE,0x07);
+////		gecko_cmd_le_gap_start_advertising(HANDLE_EDDYSTONE,le_gap_user_data, le_gap_non_connectable);
+//
+//        /* LAB TASK EXTENDED ADVT: 4th advertisement */
+////		printLog("LAB TASK EXTENDED ADVT \n");
+////		gecko_cmd_le_gap_set_advertise_timing(HANDLE_EXTENDED,160,160,0,0);
+//
+//		gecko_cmd_le_gap_set_advertise_configuration(HANDLE_EXTENDED,0x02); //Anonymous Advertising
+////		uint16_t start_advertising = (unsigned int)gecko_cmd_le_gap_start_advertising(0,le_gap_general_discoverable, le_gap_undirected_connectable)->result;
+//		gecko_cmd_le_gap_start_advertising(0,le_gap_general_discoverable, le_gap_connectable_non_scannable);
+//
+////		gecko_cmd_le_gap_set_advertise_phy(HANDLE_EXTENDED,le_gap_phy_coded, le_gap_phy_2m);
+////		gecko_cmd_le_gap_set_advertise_phy(HANDLE_EXTENDED,le_gap_phy_coded, le_gap_phy_coded); //125k coded PHY
+////
+//////		gecko_cmd_le_gap_clear_advertise_configuration(HANDLE_EXTENDED,0x01);
+////		gecko_cmd_le_gap_set_advertise_configuration(HANDLE_EXTENDED,0x08);
+////		gecko_cmd_le_gap_set_advertise_tx_power(HANDLE_EXTENDED,100);
+//
+//        break;
+//
+//
+//      /* LAB TASK PERIODIC ADVT
+//       * Use this case when testing periodic advertisements
+//       * */
       case gecko_evt_system_boot_id:
         bootMessage(&(evt->data.evt_system_boot));
+          gecko_cmd_system_set_tx_power(100);
+          gecko_cmd_le_gap_set_advertise_tx_power(HANDLE_DEMO,30);
 
-        /* LAB TASK MULTIPLE ADVT: iBeacons */
-        bcnSetupAdvBeaconing(); //iBeacons
-        printLog("boot event - starting advertising\r\n");
-        gecko_cmd_le_gap_set_advertise_timing(HANDLE_DEMO, 160, 160, 0, 0);
+          gecko_cmd_le_gap_set_advertise_timing(HANDLE_DEMO, 160, 160, 0, 0);
+          gecko_cmd_le_gap_clear_advertise_configuration(HANDLE_DEMO,1);
+          gecko_cmd_le_gap_start_advertising(HANDLE_DEMO,le_gap_general_discoverable, le_gap_non_connectable);
+          gecko_cmd_le_gap_start_periodic_advertising(HANDLE_DEMO,160,160,1);
 
-        /* LAB TASK 2M PHY connection: enable scan request */
-        gecko_cmd_le_gap_set_advertise_report_scan_request(HANDLE_DEMO,true); //Stop continuous output
+          /* LAB TASK PERIODIC ADVT: set advertising data and soft timer */
+          gecko_cmd_le_gap_bt5_set_adv_data(HANDLE_DEMO, 8, sizeof(periodicData), (const uint8 *)pData);
+          printLog("\r\n Counter: %d \r\n", counter);
+          gecko_cmd_hardware_set_soft_timer(32768, 0, 0);
 
-        gecko_cmd_le_gap_start_advertising(HANDLE_DEMO, le_gap_general_discoverable, le_gap_connectable_scannable);
-
-        /* LAB TASK MULTIPLE ADVT: EddyStone */
-        gecko_cmd_le_gap_bt5_set_adv_data(HANDLE_EDDYSTONE, ADV_PKT, 30, eddystone_data);
-		gecko_cmd_le_gap_set_advertise_configuration(HANDLE_EDDYSTONE,0x01);
-		gecko_cmd_le_gap_set_advertise_timing(HANDLE_EDDYSTONE,160,160,0,0);
-		gecko_cmd_le_gap_set_advertise_channel_map(HANDLE_EDDYSTONE,0x07);
-		gecko_cmd_le_gap_start_advertising(HANDLE_EDDYSTONE,le_gap_user_data, le_gap_non_connectable);
-
-        /* LAB TASK EXTENDED ADVT: 4th advertisement */
-		printLog("LAB TASK EXTENDED ADVT \n");
-		gecko_cmd_le_gap_set_advertise_timing(HANDLE_EXTENDED,160,160,0,0);
-
-		gecko_cmd_le_gap_set_advertise_configuration(HANDLE_EXTENDED,0x02); //Anonymous Advertising
-//		uint16_t start_advertising = (unsigned int)gecko_cmd_le_gap_start_advertising(0,le_gap_general_discoverable, le_gap_undirected_connectable)->result;
-		gecko_cmd_le_gap_start_advertising(0,le_gap_general_discoverable, le_gap_connectable_non_scannable);
-
-//		gecko_cmd_le_gap_set_advertise_phy(HANDLE_EXTENDED,le_gap_phy_coded, le_gap_phy_2m);
-		gecko_cmd_le_gap_set_advertise_phy(HANDLE_EXTENDED,le_gap_phy_coded, le_gap_phy_coded); //125k coded PHY
-
-//		gecko_cmd_le_gap_clear_advertise_configuration(HANDLE_EXTENDED,0x01);
-		gecko_cmd_le_gap_set_advertise_configuration(HANDLE_EXTENDED,0x08);
-		gecko_cmd_le_gap_set_advertise_tx_power(HANDLE_EXTENDED,100);
-
-        break;
-
-
-      /* LAB TASK PERIODIC ADVT
-       * Use this case when testing periodic advertisements
-       * */
-//      case gecko_evt_system_boot_id:
-//          gecko_cmd_system_set_tx_power(100);
-//          gecko_cmd_le_gap_set_advertise_tx_power(HANDLE_DEMO,30);
-//
-//          gecko_cmd_le_gap_set_advertise_timing(HANDLE_DEMO, 160, 160, 0, 0);
-//          gecko_cmd_le_gap_clear_advertise_configuration(HANDLE_DEMO,1);
-//          gecko_cmd_le_gap_start_advertising(HANDLE_DEMO,le_gap_general_discoverable, le_gap_non_connectable);
-//          gecko_cmd_le_gap_start_periodic_advertising(HANDLE_DEMO,160,160,1);
-//
-//          /* LAB TASK PERIODIC ADVT: set advertising data and soft timer */
-//          gecko_cmd_le_gap_bt5_set_adv_data(HANDLE_DEMO, 8, sizeof(periodicData), (const uint8 *)pData);
-//          printLog("\r\n Counter: %d \r\n", counter);
-//          gecko_cmd_hardware_set_soft_timer(32768, 0, 0);
-//
-//      break;
+      break;
 
 
       /* LAB TASK PERIODIC ADVT */

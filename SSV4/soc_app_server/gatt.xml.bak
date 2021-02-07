@@ -21,7 +21,7 @@
     <!--Device Name-->
     <characteristic id="device_name" name="Device Name" sourceId="org.bluetooth.characteristic.gap.device_name" uuid="2A00">
       <informativeText/>
-      <value length="13" type="utf-8" variable_length="false">Empty </value>
+      <value length="40" type="utf-8" variable_length="false">Extended Advertising Test Device</value>
       <properties read="true" read_requirement="optional" write="true" write_requirement="optional"/>
     </characteristic>
     
