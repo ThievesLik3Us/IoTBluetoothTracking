@@ -1,0 +1,31 @@
+{
+  "id": "multilocator-test_room",
+  "locators": [
+    {
+      "id": "ble-sr-111111111111",
+      "coordinate": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "orientation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    {
+      "id": "ble-pd-222222222222",
+      "coordinate": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "orientation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 180.0
+      }
+    }
+  ]
+}
