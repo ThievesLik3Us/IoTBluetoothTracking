@@ -9,7 +9,7 @@ import rockpi_client
 from pymongo import MongoClient
 
 # Setup Server address and port
-HOST_ADDR = "User-PC" #socket.getfqdn() #socket.gethostbyname(socket.gethostname())
+HOST_ADDR = ""
 HOST_PORT = 8082
 print("IP/Port: " + HOST_ADDR + "/" + str(HOST_PORT))
 

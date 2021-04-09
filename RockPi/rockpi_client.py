@@ -8,7 +8,7 @@ import time
 from pymongo import MongoClient
 
 # Setup Client address and port
-LISTEN_ADDR = 'User-PC'
+LISTEN_ADDR = 'Kolby-Laptop'
 LISTEN_PORT = 8082
 
 # Setup Client Certificates and key files
@@ -21,7 +21,7 @@ CA_SSL_KEY = './certs/ca.key'
 # Setup Client Certificates and key files
 SERVER_SSL_CERT = '../certs/server.crt'
 SERVER_SSL_KEY = '../certs/server.key'
-SERVER_SNI_HOSTNAME = 'bluecate.com'
+SERVER_SNI_HOSTNAME = 'Kolby-Laptop'
 
 def Multicast():
     multicast_group = '224.3.29.71'
