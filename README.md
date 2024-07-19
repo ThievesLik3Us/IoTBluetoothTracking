@@ -1,9 +1,6 @@
 # IoTrack
 IoT Bluetooth Tracking Software Repository
 
-# Style Guide
-Variable names - lowercase with words seperated by an _ (example: my_variable, this_is_a_variable)
+Uses Silicon Labs BG22 devices with their AoA (Angle of Arrival) library to determine bluetooth devices locations with cm accuracy. 
 
-Function names - first letter uppercase, rest of word lowercase with words seperated by an _ (example: My_Function(), This_Is_A_Function())
-
-Constants - all uppercase (example: MY_CONSTANT, THIS_IS_A_CONSTANT)
+This project has a BG22 device that sends out bluetooth 5.1 data packets with the included AoA information. Another BG22 device can then recieve the information and determine the distance and angle to the original BG22. The SSv5 project should load into Simplicity studio 5 and can be loaded onto a BG22 device. 
